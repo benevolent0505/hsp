@@ -1,0 +1,145 @@
+randomize
+
+screen 0,600,600
+
+;;cell”z—ñ‚ðì‚é 0‚Í•1‚Í”’
+dim cell,60,60
+
+celload "black.jpg"
+black = stat
+celload "white.jpg"
+white = stat
+
+image = black
+x = 0
+y = 0
+
+#module
+#deffunc draw_cell int d_row,int d_col,int d_x,int d_y
+	
+#global
+
+*main
+	redraw 0
+	color 0,255,0
+	boxf
+	
+	image = black
+	x = 0
+	y = 0
+
+	c_row = 0
+	c_col = 0
+	repeat 60
+		repeat 60
+			tmp = rnd(10)
+			if tmp > 5 {
+				cell(c_row,c_col) = 0
+			} else {
+				cell(c_row,c_col) = 1
+			}
+			c_col + 1
+		loop
+		c_row + 1
+	loop
+	
+	row = 0
+	col = 0
+	repeat 60
+		repeat 60
+			if cell(row,col) = 0{
+				image = black
+			} else {
+				image = white
+			}
+			pos x,y
+			celput image,0,1,1,0
+			if x = 590{
+				x = 0
+			} else {
+				x + 10
+			}
+			col + 1
+		loop
+		row + 1 
+		y + 10
+	loop
+	
+	redraw 1
+	;stop
+	await 200
+	
+	row = 0
+	col = 0
+	repeat 60
+		repeat 60
+			count = 0
+		if cell(row,col) = 0{
+			if cell(row,col+1) = 0 : count + 1
+			if cell(row,col-1) = 0 : count + 1
+			if cell(row+1,col) = 0 : count + 1
+			if cell(row-1,col) = 0 : count + 1
+			if cell(row+1,col+1) = 0 : count + 1
+			if cell(row+1,col-1) = 0 : count + 1
+			if cell(row-1,col+1) = 0 : count + 1
+			if cell(row-1,col-1) = 0 : count + 1
+	
+			if (count==2)|(count==3) {
+				cell(row,col) = 0
+			} else {
+				cell(row,col) = 1
+			}
+		} else {
+			if cell(row,col+1) = 0 : count + 1
+			if cell(row,col-1) = 0 : count + 1
+			if cell(row+1,col) = 0 : count + 1
+			if cell(row-1,col) = 0 : count + 1
+			if cell(row+1,col+1) = 0 : count + 1
+			if cell(row+1,col-1) = 0 : count + 1
+			if cell(row-1,col+1) = 0 : count + 1
+			if cell(row-1,col-1) = 0 : count + 1
+	
+			if count==3 {
+				cell(row,col) = 0
+			} else {
+				cell(row,col) = 1
+			}
+		}
+			col + 1
+		loop
+		row + 1
+	loop
+	
+	repeat 100
+		gosub *draw
+	loop
+	stop
+	
+	goto *main
+	
+*draw
+	redraw 0
+	color 0,255,0
+	boxf
+	row = 0
+	col = 0
+	repeat 60
+		repeat 60
+			if cell(row,col) = 0{
+				image = black
+			} else {
+				image = white
+			}
+			pos x,y
+			celput image,0,1,1,0
+			if x = 590{
+				x = 0
+			} else {
+				x + 10
+			}
+			col + 1
+		loop
+		row + 1 
+		y + 10
+	loop
+	return

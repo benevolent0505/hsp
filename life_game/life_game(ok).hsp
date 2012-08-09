@@ -1,0 +1,179 @@
+screen 0,500,500
+
+//cell配列(=マス)を作る 1は黒0は白
+dim cell,7,7
+
+cell(3,2) = 1
+cell(3,3) = 1 
+cell(3,4) = 1
+//cell(4,3) = 1
+
+//画像を読み込んで変数に入れる
+celload "black2.jpg"
+black = stat
+celload "white2.jpg"
+white = stat
+
+//image変数
+image = black
+
+
+*main
+	redraw 0
+	color 0,255,0
+	boxf
+	draw_cell
+	func_cell
+
+	redraw 1
+	
+	await 1000
+	goto *main
+	
+#deffunc draw_cell
+	x = 0
+	y = 0
+	d_r_e = length(cell)-1
+	d_c_e = length2(cell)-1
+	for d_row,1,d_r_e,1
+		for d_col,1,d_c_e,1
+			if cell(d_row,d_col) == 1 {
+				image = black
+			} else {
+				image = white
+			}
+			pos x,y
+			celput image,0,1,1,0
+			if x = 400 {
+				x = 0
+			} else {
+				x + 100
+			}
+		next
+		y + 100
+	next
+return
+
+
+/**チェック*/
+#deffunc func_cell
+	dim cell_buf,7,7
+	array_copy cell_buf,cell
+	count = 0	//黒が周囲8マスにいくつあるかの、カウント
+	for f_row,1,length(cell_buf)-1,1
+		for f_col,1,length2(cell_buf)-1,1
+			count = 0
+			if cell(f_row,f_col) == 1 {
+				f_col+1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_col-1
+	
+				f_col-1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_col+1
+	
+				f_row-1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row+1
+	
+				f_row+1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row-1
+	
+				f_row-1:f_col-1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row+1:f_col+1
+	
+				f_row-1:f_col+1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row+1:f_col-1
+	
+				f_row+1:f_col-1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row-1:f_col+1
+	
+				f_row+1:f_col+1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row-1:f_col-1
+	
+				if (count == 2 | count == 3) {
+					cell_buf(f_row,f_col) = 1
+					;dialog "alive "+cell_buf(f_row,f_col)+" count "+count,0
+				} else {
+					cell_buf(f_row,f_col) = 0
+					;dialog "death "+cell_buf(f_row,f_col)+" count "+count,0
+				}
+			} else {
+				f_col+1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_col-1
+	
+				f_col-1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_col+1
+	
+				f_row-1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row+1
+	
+				f_row+1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row-1
+	
+				f_row-1:f_col-1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row+1:f_col+1
+	
+				f_row-1:f_col+1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row+1:f_col-1
+	
+				f_row+1:f_col-1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row-1:f_col+1
+	
+				f_row+1:f_col+1
+				if cell(f_row,f_col) == 1 : count + 1
+				f_row-1:f_col-1
+	
+				if count == 3 {
+					cell_buf(f_row,f_col) = 1
+					;dialog "alive "+cell_buf(f_row,f_col)+" count "+count,0
+				} else {
+					cell_buf(f_row,f_col) = 0
+					;dialog "death "+cell_buf(f_row,f_col)+" count "+count,0
+				}
+			}
+		next
+	next
+	array_copy cell,cell_buf
+return
+
+/**
+** 初めの引数の配列に後の引数の配列を代入する
+ */
+#deffunc array_copy array arr1,array arr2
+	c_row = 0
+	c_col = 0
+	repeat length(arr1)
+		c_col = 0
+		repeat length2(arr1)
+			arr1(c_row,c_col) = arr2(c_row,c_col)
+			c_col++
+		loop
+		c_row++
+	loop
+return
+
+#deffunc init_cell
+	_row = 0
+	_col = 0
+	repeat 7
+		repeat 7
+			cell(_row,_col) = 0
+			_col + 1
+		loop
+	_row + 1
+	_col = 0
+	loop
+return

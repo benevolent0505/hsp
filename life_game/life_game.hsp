@@ -1,0 +1,177 @@
+randomize
+screen 0,600,600
+
+//cell配列(=マス)を作る 0は黒1は白
+dim cell,62,62
+
+//画像を読み込んで変数に入れる
+celload "black.jpg"
+black = stat
+celload "white.jpg"
+white = stat
+
+//image変数
+image = black
+
+//描画する座標
+x = 0
+y = 0
+
+//メインループ開始
+*main
+	redraw 0
+	
+	//マスを0で初期化
+	init_cell
+	//マスにランダムに0と1をセット
+	set_cell
+	
+	//マスを描画
+	draw_cell
+	
+	//マスを変化
+	func_cell
+	await 20
+	draw_cell
+	redraw 1
+	await 20
+	goto *main
+	
+#deffunc draw_cell
+	d_row = 1
+	d_col = 1
+	x = 0
+	y = 0
+	repeat 60
+		repeat 60
+			if cell(d_row,d_col) = 0{
+				image = black
+			} else {
+				image = white
+			}
+			pos x,y
+			celput image,0,1,1,0
+			if x = 590 {
+				x = 0
+			} else {
+				x + 10
+			}
+			d_col + 1
+		loop
+		y + 10
+		d_row + 1 
+	loop
+return 
+
+#deffunc set_cell
+	c_row = 1
+	c_col = 1
+	repeat 60
+		repeat 60
+			tmp = rnd(10)
+			if tmp > 5 {
+				cell(c_row,c_col) = 0
+			} else {
+				cell(c_row,c_col) = 1
+			}
+			c_col + 1
+		loop
+		c_row + 1
+	loop
+return
+
+#deffunc func_cell
+	dim cell_buff,62,62
+	cell_buff = cell
+	
+	f_row = 1
+	f_col = 1
+	count = 0
+	repeat 60
+		repeat 60
+			count = 0
+			if cell(f_row,f_col) == 0 {
+				f_col+1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_col-1
+				f_col-1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_col+1
+				f_row+1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row-1
+				f_row-1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row+1
+				f_row+1:f_col+1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row-1:f_col-1
+				f_row-1:f_col+1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row+1:f_col-1
+				f_row+1:f_col-1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row-1:f_col+1
+				f_row-1:f_col-1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row+1:f_col+1
+	
+				if (count == 2 | count == 3) {
+					cell_buff(f_row,f_col) = 0
+				} else {
+					cell_buff(f_row,f_col) = 1
+				}
+			} else {
+				f_col+1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_col-1
+				f_col-1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_col+1
+				f_row+1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row-1
+				f_row-1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row+1
+				f_row+1:f_col+1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row-1:f_col-1
+				f_row-1:f_col+1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row+1:f_col-1
+				f_row+1:f_col-1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row-1:f_col+1
+				f_row-1:f_col-1
+				if cell(f_row,f_col) == 0 { count + 1 }
+				f_row+1:f_col+1
+	
+				if count == 3 {
+					cell_buff(f_row,f_col) = 0
+				} else {
+					cell_buff(f_row,f_col) = 1
+				}
+			}
+			f_col + 1
+		loop
+	f_row + 1
+	loop
+	
+	cell = cell_buff
+return
+
+/**
+** cell配列を0で初期化する
+ */
+#deffunc init_cell
+	_row = 0
+	_col = 0
+	repeat 62
+		repeat 62
+			cell(_row,_col) = 0
+			_col + 1
+		loop
+	_row + 1
+	loop
+return
